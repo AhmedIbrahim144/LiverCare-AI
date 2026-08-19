@@ -1,23 +1,34 @@
 # Environment & secrets
 .env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
 
 # Python
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
 *.egg-info/
 .venv/
 venv/
+env/
 
-# Generated databases
+# Generated / local databases
 vector_db/
 chroma_db/
 *.sqlite3
+*.db
 data/store/*.db
+data/store/*.json
 
 # Logs
+logs/
 *.log
 server_*.txt
+server_*.log
 
 # IDE
 .idea/
@@ -31,6 +42,7 @@ Thumbs.db
 
 # Node
 node_modules/
+npm-debug.log*
 
 # Build
 dist/
