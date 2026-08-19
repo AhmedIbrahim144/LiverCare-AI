@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LiverCare AI — Clinical Medical AI Assistant & Health Monitor</title>
+  <meta name="description" content="Professional medical AI application for metabolic liver disease monitoring, clinical guidelines RAG retrieval, and lab result insights." />
+  
+  <!-- Google Fonts: Plus Jakarta Sans (Latin) + Cairo (Arabic) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div id="app-layout">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar" id="app-sidebar">
+      <div class="sidebar-header" id="sidebar-header">
+        <div class="brand-logo-wrap" id="brand-logo-wrap">
+          <i data-lucide="activity" style="width: 22px; height: 22px;"></i>
+        </div>
+        <div class="brand-title" id="brand-title">
+          <span>LiverCare</span>
+          <span style="color: var(--primary-600);">AI</span>
+          <span class="brand-badge" id="brand-badge-text">Clinical</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" id="sidebar-nav">
+        <button class="nav-item active" id="nav-dashboard" data-target="view-dashboard">
+          <i data-lucide="layout-dashboard" class="nav-icon"></i>
+          <span class="nav-label" data-i18n="nav_dashboard">Dashboard</span>
+        </button>
+
+        <button class="nav-item" id="nav-assistant" data-target="view-assistant">
+          <i data-lucide="bot-message-square" class="nav-icon"></i>
+          <span class="nav-label" data-i18n="nav_assistant">AI Assistant</span>
+          <span class="nav-pill" data-i18n="badge_rag">RAG</span>
+        </button>
+
+        <button class="nav-item" id="nav-health" data-target="view-health">
+          <i data-lucide="heart-pulse" class="nav-icon"></i>
+          <span class="nav-label" data-i18n="nav_health">My Health</span>
+        </button>
+
+        <button class="nav-item" id="nav-labs" data-target="view-labs">
+          <i data-lucide="flask-conical" class="nav-icon"></i>
+          <span class="nav-label" data-i18n="nav_labs">Lab Results</span>
+        </button>
+
+        <button class="nav-item" id="nav-sources" data-target="view-sources">
+          <i data-lucide="book-open-check" class="nav-icon"></i>
+          <span class="nav-label" data-i18n="nav_sources">Sources & Evidence</span>
+        </button>
+
+        <button class="nav-item" id="nav-settings" data-target="view-settings">
+          <i data-lucide="settings-2" class="nav-icon"></i>
+          <span class="nav-label" data-i18n="nav_settings">Settings</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer" id="sidebar-footer">
+        <div class="clinical-badge-card" id="clinical-evidence-badge">
+          <div class="clinical-badge-icon">
+            <i data-lucide="shield-check" style="width: 16px; height: 16px;"></i>
+          </div>
+          <div class="clinical-badge-text">
+            <h5 data-i18n="evidence_verified">EASL & AASLD</h5>
+            <p data-i18n="evidence_subtitle">Clinical Guidelines 2024</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Shell -->
+    <main class="app-main" id="app-main">
+      
+      <!-- Top Application Header -->
+      <header class="app-header" id="app-header">
+        <div class="header-left" id="header-left">
+          <button class="mobile-menu-btn" id="mobile-menu-toggle" aria-label="Toggle navigation menu">
+            <i data-lucide="menu" style="width: 20px; height: 20px;"></i>
+          </button>
+          <div class="page-breadcrumb" id="page-breadcrumb">
+            <h1 class="page-title" id="current-page-title" data-i18n="page_dashboard">Dashboard</h1>
+            <span class="page-subtitle" id="current-page-subtitle" data-i18n="page_dashboard_sub">Patient Health Overview & Metabolic Liver Monitoring</span>
+          </div>
+        </div>
+
+        <div class="header-actions" id="header-actions">
+          <!-- Language Toggle: العربية | English -->
+          <div class="toggle-pill-group" id="language-toggle-group">
+            <button class="toggle-pill-btn active" id="btn-lang-en" data-lang="en">English</button>
+            <button class="toggle-pill-btn" id="btn-lang-ar" data-lang="ar">العربية</button>
+          </div>
+
+          <!-- Dark/Light Mode Toggle -->
+          <button class="icon-action-btn" id="theme-toggle-btn" aria-label="Toggle dark mode" title="Toggle theme">
+            <i data-lucide="moon" id="theme-icon" style="width: 18px; height: 18px;"></i>
+          </button>
+
+          <!-- Patient Header Profile Badge -->
+          <div class="patient-header-badge" id="patient-header-badge">
+            <div class="patient-avatar-mini" id="patient-avatar-letter">A</div>
+            <div class="patient-header-info">
+              <h6 id="header-patient-name">Alex Morgan</h6>
+              <span id="header-patient-diag">MASLD Stage 1</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dynamic Content Body -->
+      <div class="content-container" id="content-container">
+        
+        <!-- Universal Educational Medical Disclaimer -->
+        <div class="medical-disclaimer-banner" id="medical-disclaimer-banner">
+          <i data-lucide="info" class="disclaimer-icon" style="width: 18px; height: 18px;"></i>
+          <p class="disclaimer-text" data-i18n="medical_disclaimer_text">
+            <strong>Medical Notice:</strong> LiverCare AI provides educational information and clinical guideline synthesis. It does not replace professional medical diagnosis, advice, or emergency care.
+          </p>
+        </div>
+
+        <!-- ================================================================
+             VIEW 1: DASHBOARD
+             ================================================================ -->
+        <section class="app-view active-view" id="view-dashboard">
+          
+          <!-- Patient Greeting Hero Card -->
+          <div class="greeting-hero-card" id="greeting-hero-card">
+            <div class="greeting-text" id="greeting-text">
+              <h2 id="greeting-heading">Welcome back, Alex</h2>
+              <p id="greeting-desc" data-i18n="greeting_desc">
+                Your liver biomarkers show a positive improvement trend following lifestyle adjustments. Keep targeting 150 minutes of weekly aerobic exercise.
+              </p>
+              <div class="greeting-meta" id="greeting-meta">
+                <span class="status-chip success" id="chip-status-improving">
+                  <i data-lucide="trending-down" style="width: 14px; height: 14px;"></i>
+                  <span data-i18n="alt_improving">ALT Enzyme: -16 IU/L</span>
+                </span>
+                <span class="status-chip primary" id="chip-status-fib4">
+                  <i data-lucide="shield" style="width: 14px; height: 14px;"></i>
+                  <span data-i18n="fib4_low">FIB-4: 0.98 (Low Risk)</span>
+                </span>
+                <span class="status-chip" id="chip-status-checkup">
+                  <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
+                  <span data-i18n="next_visit">Next Checkup: Oct 15, 2026</span>
+                </span>
+              </div>
+            </div>
+            <div class="hero-action-box" id="hero-action-box">
+              <button class="btn-primary" id="btn-quick-ask-ai">
+                <i data-lucide="bot-message-square" style="width: 18px; height: 18px;"></i>
+                <span data-i18n="btn_consult_ai">Consult AI Assistant</span>
+              </button>
+              <button class="btn-secondary" id="btn-log-weight-modal">
+                <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+                <span data-i18n="btn_log_weight">Log Today's Weight</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Metrics Grid -->
+          <div class="metrics-grid" id="metrics-grid">
+            
+            <!-- Metric 1: Current Weight -->
+            <div class="metric-card" id="metric-card-weight">
+              <div class="metric-header">
+                <div class="metric-title-group">
+                  <h4 data-i18n="metric_weight">Current Weight</h4>
+                </div>
+                <div class="metric-icon-box teal">
+                  <i data-lucide="scale" style="width: 18px; height: 18px;"></i>
+                </div>
+              </div>
+              <div class="metric-value-box">
+                <span class="metric-value" id="val-current-weight">84.5</span>
+                <span class="metric-unit" data-i18n="unit_kg">kg</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="weight-progress-bar" style="width: 65%;"></div>
+              </div>
+              <div class="metric-footer">
+                <span class="trend-badge positive">
+                  <i data-lucide="arrow-down" style="width: 12px; height: 12px;"></i>
+                  <span>-4.7 kg</span>
+                </span>
+                <span style="color: var(--text-muted);" data-i18n="target_weight_label">Target: 78.0 kg</span>
+              </div>
+            </div>
+
+            <!-- Metric 2: Body Mass Index -->
+            <div class="metric-card" id="metric-card-bmi">
+              <div class="metric-header">
+                <div class="metric-title-group">
+                  <h4 data-i18n="metric_bmi">Body Mass Index (BMI)</h4>
+                </div>
+                <div class="metric-icon-box blue">
+                  <i data-lucide="gauge" style="width: 18px; height: 18px;"></i>
+                </div>
+              </div>
+              <div class="metric-value-box">
+                <span class="metric-value" id="val-current-bmi">26.7</span>
+                <span class="metric-unit">kg/m²</span>
+              </div>
+              <div class="metric-footer">
+                <span class="status-chip warning" style="padding: 0.15rem 0.5rem; font-size: 0.72rem;" data-i18n="bmi_overweight">Overweight (Class 1)</span>
+                <span style="color: var(--text-muted);" data-i18n="bmi_change">Down 1.5 pts</span>
+              </div>
+            </div>
+
+            <!-- Metric 3: Physical Activity -->
+            <div class="metric-card" id="metric-card-activity">
+              <div class="metric-header">
+                <div class="metric-title-group">
+                  <h4 data-i18n="metric_activity">Weekly Aerobic Activity</h4>
+                </div>
+                <div class="metric-icon-box purple">
+                  <i data-lucide="footprints" style="width: 18px; height: 18px;"></i>
+                </div>
+              </div>
+              <div class="metric-value-box">
+                <span class="metric-value" id="val-current-active-mins">165</span>
+                <span class="metric-unit" data-i18n="unit_mins">mins / wk</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="activity-progress-bar" style="width: 100%; background: linear-gradient(90deg, #10b981, #059669);"></div>
+              </div>
+              <div class="metric-footer">
+                <span class="trend-badge positive">
+                  <i data-lucide="check-circle" style="width: 12px; height: 12px;"></i>
+                  <span data-i18n="easl_target_met">EASL Target Met (≥150m)</span>
+                </span>
+                <span style="color: var(--text-muted);" id="val-daily-steps-label">6,840 steps/day</span>
+              </div>
+            </div>
+
+            <!-- Metric 4: FIB-4 Fibrosis Score -->
+            <div class="metric-card" id="metric-card-fib4">
+              <div class="metric-header">
+                <div class="metric-title-group">
+                  <h4 data-i18n="metric_fib4">FIB-4 Fibrosis Index</h4>
+                </div>
+                <div class="metric-icon-box emerald">
+                  <i data-lucide="shield-check" style="width: 18px; height: 18px;"></i>
+                </div>
+              </div>
+              <div class="metric-value-box">
+                <span class="metric-value" id="val-current-fib4">0.98</span>
+                <span class="metric-unit">score</span>
+              </div>
+              <div class="metric-footer">
+                <span class="status-chip success" style="padding: 0.15rem 0.5rem; font-size: 0.72rem;" data-i18n="fib4_f0f1">Low Risk (F0-F1)</span>
+                <span style="color: var(--text-muted);" data-i18n="fib4_benchmark">&lt; 1.30 Threshold</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- AI Assistant Shortcut Card with Prompt Chips -->
+          <div class="ai-shortcut-card" id="ai-shortcut-card">
+            <div class="ai-shortcut-top">
+              <div class="ai-shortcut-title-group">
+                <div class="ai-avatar-sparkle">
+                  <i data-lucide="sparkles" style="width: 22px; height: 22px;"></i>
+                </div>
+                <div>
+                  <h3 data-i18n="shortcut_title">Ask LiverCare AI Assistant</h3>
+                  <p data-i18n="shortcut_subtitle">Instant evidence-based insights grounded in EASL 2024 & AASLD clinical practice guidelines.</p>
+                </div>
+              </div>
+              <button class="btn-primary" id="btn-shortcut-open-chat" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+                <span data-i18n="open_chat">Open Chat</span>
+                <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+              </button>
+            </div>
+            <div class="prompt-chips-grid" id="dashboard-prompt-chips">
+              <button class="prompt-chip" data-prompt="What does my ALT of 46 IU/L mean and how can I lower it?" data-i18n="chip_prompt_1">
+                🔬 What does my ALT of 46 IU/L mean?
+              </button>
+              <button class="prompt-chip" data-prompt="What dietary foods are proven by EASL guidelines to reduce liver fat?" data-i18n="chip_prompt_2">
+                🥗 Best foods to reduce liver fat (MASLD)
+              </button>
+              <button class="prompt-chip" data-prompt="Is drinking black coffee beneficial for steatotic liver disease?" data-i18n="chip_prompt_3">
+                ☕ Can black coffee help liver enzymes?
+              </button>
+              <button class="prompt-chip" data-prompt="Explain my FIB-4 score of 0.98 in simple terms." data-i18n="chip_prompt_4">
+                📊 Explain my FIB-4 score (0.98)
+              </button>
+            </div>
+          </div>
+
+          <!-- Dashboard 2-Column Grid: Labs & Health Progress -->
+          <div class="dashboard-grid-2col" id="dashboard-grid-2col">
+            
+            <!-- Left: Latest Lab Overview -->
+            <div class="dashboard-card" id="card-dashboard-labs">
+              <div class="card-header-flex">
+                <h3>
+                  <i data-lucide="flask-conical" style="color: var(--primary-600);"></i>
+                  <span data-i18n="recent_labs_title">Recent Liver Function Panel</span>
+                </h3>
+                <button class="card-header-action" id="btn-view-all-labs" data-i18n="view_all_labs">
+                  View Full Report &rarr;
+                </button>
+              </div>
+              <div class="lab-mini-list" id="dashboard-lab-list">
+                <!-- Populated dynamically via app.js -->
+              </div>
+            </div>
+
+            <!-- Right: Lifestyle & Guidelines Milestones -->
+            <div class="dashboard-card" id="card-dashboard-lifestyle">
+              <div class="card-header-flex">
+                <h3>
+                  <i data-lucide="check-circle-2" style="color: var(--primary-600);"></i>
+                  <span data-i18n="clinical_milestones_title">Clinical Care Milestones</span>
+                </h3>
+                <span class="status-chip success" style="font-size: 0.72rem;" data-i18n="on_track">On Track</span>
+              </div>
+              
+              <div style="display: flex; flex-direction: column; gap: 0.85rem;" id="lifestyle-checklist-items">
+                <div class="lab-mini-item">
+                  <div class="lab-mini-left">
+                    <h5 data-i18n="milestone_1_title">Mediterranean Dietary Pattern</h5>
+                    <span data-i18n="milestone_1_sub">High in extra virgin olive oil, legumes, and fish</span>
+                  </div>
+                  <span class="status-chip success" data-i18n="adherent">Adherent</span>
+                </div>
+
+                <div class="lab-mini-item">
+                  <div class="lab-mini-left">
+                    <h5 data-i18n="milestone_2_title">Weight Reduction Target (5–7%)</h5>
+                    <span data-i18n="milestone_2_sub">5.2% achieved so far (84.5 kg / Start: 89.2 kg)</span>
+                  </div>
+                  <span class="status-chip success">5.2% / 7.0%</span>
+                </div>
+
+                <div class="lab-mini-item">
+                  <div class="lab-mini-left">
+                    <h5 data-i18n="milestone_3_title">Moderate Aerobic Exercise</h5>
+                    <span data-i18n="milestone_3_sub">165 min/week (Target ≥150 min EASL Recommendation)</span>
+                  </div>
+                  <span class="status-chip success" data-i18n="target_met">Target Met</span>
+                </div>
+
+                <div class="lab-mini-item">
+                  <div class="lab-mini-left">
+                    <h5 data-i18n="milestone_4_title">Alcohol & Hepatotoxin Avoidance</h5>
+                    <span data-i18n="milestone_4_sub">Zero alcohol consumption maintained</span>
+                  </div>
+                  <span class="status-chip primary" data-i18n="maintained">Maintained</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ================================================================
+             VIEW 2: AI CHAT ASSISTANT (MAIN FEATURE)
+             ================================================================ -->
+        <section class="app-view" id="view-assistant">
+          <div class="chat-page-container" id="chat-page-container">
+            
+            <!-- Chat Assistant Header Bar -->
+            <div class="chat-header-bar" id="chat-header-bar">
+              <div class="chat-assistant-meta">
+                <div class="chat-assistant-avatar" id="chat-assistant-avatar">
+                  <i data-lucide="bot" style="width: 24px; height: 24px;"></i>
+                  <span class="status-online-dot"></span>
+                </div>
+                <div class="chat-assistant-info">
+                  <h4>
+                    <span>LiverCare AI Specialist</span>
+                    <span class="brand-badge">Clinical RAG v2.5</span>
+                  </h4>
+                  <p id="chat-status-text" data-i18n="chat_grounded_status">Grounded in EASL 2024, AASLD & WHO Clinical Guidelines</p>
+                </div>
+              </div>
+
+              <div class="chat-actions-group">
+                <button class="btn-secondary" id="btn-clear-chat" title="Clear conversation" style="padding: 0.4rem 0.85rem; font-size: 0.8rem;">
+                  <i data-lucide="trash-2" style="width: 15px; height: 15px;"></i>
+                  <span data-i18n="clear_chat">Clear Chat</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Chat Messages Scroll Container -->
+            <div class="chat-messages-scroll" id="chat-messages-container">
+              <!-- Initial Welcome Message from AI -->
+              <div class="chat-message-row ai" id="initial-ai-welcome-message">
+                <div class="message-avatar ai-avatar">
+                  <i data-lucide="bot" style="width: 20px; height: 20px;"></i>
+                </div>
+                <div class="message-body-wrap">
+                  <div class="message-bubble" id="welcome-message-bubble">
+                    <p data-i18n="ai_welcome_p1">Hello Alex, I am your <strong>LiverCare AI</strong> medical assistant.</p>
+                    <p data-i18n="ai_welcome_p2">I am configured to provide educational insights and answer your questions about <strong>metabolic liver health (MASLD)</strong>, lab results (ALT, AST, FIB-4), dietary recommendations, and evidence-based clinical guidelines.</p>
+                    <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.5rem;" data-i18n="ai_welcome_disclaimer">
+                      *Note: I provide educational clinical guidance and do not provide medical diagnosis or emergency prescriptions.*
+                    </p>
+                  </div>
+                  <span class="message-timestamp">LiverCare AI &bull; Grounded Evidence</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Chat Input Controls Bar -->
+            <div class="chat-input-wrapper" id="chat-input-wrapper">
+              
+              <!-- Quick Prompt Suggestions Bar -->
+              <div class="prompt-chips-grid" id="chat-quick-suggestions" style="margin-bottom: 0.25rem;">
+                <button class="prompt-chip" data-prompt="What dietary lifestyle changes reduce liver fat in MASLD?" data-i18n="chat_prompt_diet">
+                  🥗 Diet for MASLD
+                </button>
+                <button class="prompt-chip" data-prompt="How do I interpret my ALT 46 IU/L and AST 34 IU/L?" data-i18n="chat_prompt_enzymes">
+                  🔬 Interpret ALT / AST
+                </button>
+                <button class="prompt-chip" data-prompt="What is the significance of a FIB-4 score of 0.98?" data-i18n="chat_prompt_fib4">
+                  📊 What is FIB-4 score?
+                </button>
+                <button class="prompt-chip" data-prompt="What are safe exercise recommendations for liver health?" data-i18n="chat_prompt_exercise">
+                  🏃 Exercise guidelines
+                </button>
+              </div>
+
+              <div class="chat-input-controls">
+                <textarea 
+                  class="chat-textarea" 
+                  id="chat-user-input" 
+                  placeholder="Ask a question about your liver health, labs, or guidelines..." 
+                  data-i18n-placeholder="chat_placeholder"
+                  rows="1"
+                ></textarea>
+
+                <button class="btn-send-chat" id="btn-send-message" aria-label="Send message">
+                  <span data-i18n="send_btn">Send</span>
+                  <i data-lucide="send" style="width: 16px; height: 16px;"></i>
+                </button>
+              </div>
+
+              <div class="chat-input-hints">
+                <span data-i18n="enter_to_send_hint">Press Enter to send &bull; Shift + Enter for new line</span>
+                <span style="color: var(--primary-600); font-weight: 600;" data-i18n="safety_active">Safety Guardrail Active</span>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ================================================================
+             VIEW 3: MY HEALTH & TRACKING
+             ================================================================ -->
+        <section class="app-view" id="view-health">
+          
+          <!-- Patient Profile Card -->
+          <div class="dashboard-card" id="patient-profile-card" style="margin-bottom: 1.5rem;">
+            <div class="card-header-flex">
+              <h3>
+                <i data-lucide="user-check" style="color: var(--primary-600);"></i>
+                <span data-i18n="patient_profile_title">Patient Clinical Profile</span>
+              </h3>
+              <button class="btn-secondary" id="btn-edit-patient-metrics" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">
+                <i data-lucide="edit-2" style="width: 14px; height: 14px;"></i>
+                <span data-i18n="update_metrics">Update Metrics</span>
+              </button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;" id="patient-demographics-grid">
+              <div class="lab-mini-item">
+                <div>
+                  <span style="font-size: 0.75rem; color: var(--text-muted);" data-i18n="patient_name_label">Patient Name</span>
+                  <h5 id="profile-name-val">Alex Morgan</h5>
+                </div>
+              </div>
+              <div class="lab-mini-item">
+                <div>
+                  <span style="font-size: 0.75rem; color: var(--text-muted);" data-i18n="patient_age_label">Age & Gender</span>
+                  <h5>48 yrs &bull; Male</h5>
+                </div>
+              </div>
+              <div class="lab-mini-item">
+                <div>
+                  <span style="font-size: 0.75rem; color: var(--text-muted);" data-i18n="patient_diagnosis_label">Primary Diagnosis</span>
+                  <h5 id="profile-diag-val" style="color: var(--primary-700);">MASLD (Stage 1)</h5>
+                </div>
+              </div>
+              <div class="lab-mini-item">
+                <div>
+                  <span style="font-size: 0.75rem; color: var(--text-muted);" data-i18n="patient_height_label">Height & Target</span>
+                  <h5>178 cm &bull; Goal 78 kg</h5>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Weight Tracking & Historical Progression -->
+          <div class="dashboard-grid-2col" style="margin-bottom: 1.5rem;">
+            
+            <div class="dashboard-card" id="card-weight-tracker">
+              <div class="card-header-flex">
+                <h3>
+                  <i data-lucide="scale" style="color: var(--primary-600);"></i>
+                  <span data-i18n="weight_history_title">Weight Progression Log</span>
+                </h3>
+                <button class="btn-primary" id="btn-log-weight-btn2" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">
+                  <i data-lucide="plus" style="width: 14px; height: 14px;"></i>
+                  <span data-i18n="add_entry">Add Entry</span>
+                </button>
+              </div>
+              
+              <!-- SVG Visual Line Chart for Weight -->
+              <div id="weight-chart-container" style="margin-bottom: 1rem;">
+                <svg id="weight-svg-chart" viewBox="0 0 500 160" style="width: 100%; height: 160px; overflow: visible;">
+                  <!-- Background grid lines -->
+                  <line x1="40" y1="20" x2="480" y2="20" stroke="var(--border-subtle)" stroke-dasharray="3,3" />
+                  <line x1="40" y1="70" x2="480" y2="70" stroke="var(--border-subtle)" stroke-dasharray="3,3" />
+                  <line x1="40" y1="120" x2="480" y2="120" stroke="var(--border-subtle)" stroke-dasharray="3,3" />
+                  
+                  <!-- Area fill -->
+                  <polygon points="50,40 150,65 250,95 350,115 450,125 450,150 50,150" fill="rgba(13, 148, 136, 0.1)" />
+                  <!-- Polyline curve -->
+                  <polyline points="50,40 150,65 250,95 350,115 450,125" fill="none" stroke="var(--primary-600)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                  
+                  <!-- Data Dots & Labels -->
+                  <circle cx="50" cy="40" r="5" fill="#0d9488" />
+                  <text x="50" y="30" font-size="11" fill="var(--text-primary)" text-anchor="middle" font-weight="700">89.2 kg</text>
+                  
+                  <circle cx="150" cy="65" r="5" fill="#0d9488" />
+                  <text x="150" y="55" font-size="11" fill="var(--text-primary)" text-anchor="middle" font-weight="700">87.8 kg</text>
+                  
+                  <circle cx="250" cy="95" r="5" fill="#0d9488" />
+                  <text x="250" y="85" font-size="11" fill="var(--text-primary)" text-anchor="middle" font-weight="700">86.1 kg</text>
+                  
+                  <circle cx="350" cy="115" r="5" fill="#0d9488" />
+                  <text x="350" y="105" font-size="11" fill="var(--text-primary)" text-anchor="middle" font-weight="700">85.0 kg</text>
+
+                  <circle cx="450" cy="125" r="6" fill="#14b8a6" stroke="#fff" stroke-width="2" />
+                  <text x="450" y="115" font-size="11" fill="var(--primary-700)" text-anchor="middle" font-weight="800">84.5 kg</text>
+                </svg>
+              </div>
+
+              <div class="lab-mini-list" id="weight-history-table-body">
+                <!-- Populated dynamically via app.js -->
+              </div>
+            </div>
+
+            <!-- Physical Activity & Steps Breakdown -->
+            <div class="dashboard-card" id="card-activity-tracker">
+              <div class="card-header-flex">
+                <h3>
+                  <i data-lucide="activity" style="color: var(--primary-600);"></i>
+                  <span data-i18n="activity_breakdown_title">Weekly Activity & Steps</span>
+                </h3>
+                <span class="status-chip success" data-i18n="active_level">Active Level</span>
+              </div>
+
+              <div id="activity-chart-bars" style="display: flex; justify-content: space-between; align-items: flex-end; height: 160px; padding: 1rem 0; margin-bottom: 1rem; border-bottom: 1px solid var(--border-subtle);">
+                <!-- Dynamic Activity Bars in app.js -->
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <div class="lab-mini-item">
+                  <div class="lab-mini-left">
+                    <h5 data-i18n="daily_avg_steps">Daily Steps Average</h5>
+                    <span data-i18n="daily_avg_steps_sub">Calculated over past 7 days</span>
+                  </div>
+                  <div class="lab-mini-val" id="val-health-daily-steps">6,840 steps</div>
+                </div>
+
+                <div class="lab-mini-item">
+                  <div class="lab-mini-left">
+                    <h5 data-i18n="weekly_aerobic">Weekly Aerobic Exercise</h5>
+                    <span data-i18n="weekly_aerobic_sub">Moderate intensity brisk walking & cycling</span>
+                  </div>
+                  <div class="lab-mini-val" id="val-health-active-mins" style="color: var(--status-success-text);">165 mins</div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ================================================================
+             VIEW 4: LAB RESULTS
+             ================================================================ -->
+        <section class="app-view" id="view-labs">
+          
+          <div class="labs-header-banner" id="labs-header-banner">
+            <div>
+              <h2 style="font-size: 1.4rem; font-weight: 800;" data-i18n="labs_banner_title">Comprehensive Liver Function Panel</h2>
+              <p style="font-size: 0.88rem; color: var(--text-secondary);" data-i18n="labs_banner_sub">
+                Last Laboratory Evaluation: <strong id="labs-last-date-text">July 28, 2026</strong> &bull; Central Clinical Laboratory
+              </p>
+            </div>
+            
+            <button class="btn-primary" id="btn-explain-full-panel">
+              <i data-lucide="sparkles" style="width: 18px; height: 18px;"></i>
+              <span data-i18n="btn_explain_all_labs">Explain Entire Panel with AI</span>
+            </button>
+          </div>
+
+          <!-- Labs Cards Grid -->
+          <div class="labs-grid-cards" id="labs-grid-container">
+            <!-- Populated dynamically via app.js -->
+          </div>
+
+        </section>
+
+        <!-- ================================================================
+             VIEW 5: CLINICAL SOURCES & EVIDENCE
+             ================================================================ -->
+        <section class="app-view" id="view-sources">
+          
+          <div style="margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 0.35rem;" data-i18n="sources_title">Clinical Practice Guidelines & Evidence Base</h2>
+            <p style="font-size: 0.88rem; color: var(--text-secondary);" data-i18n="sources_subtitle">
+              LiverCare AI responses are indexed and retrieved using RAG from internationally recognized hepatology consensus statements.
+            </p>
+          </div>
+
+          <div class="sources-search-bar">
+            <input 
+              type="text" 
+              class="search-input" 
+              id="sources-search-input" 
+              placeholder="Search guidelines by keyword (e.g. MASLD, ALT, FIB-4, Mediterranean Diet, Coffee)..." 
+              data-i18n-placeholder="search_guidelines_placeholder"
+            />
+          </div>
+
+          <div class="sources-list-grid" id="sources-list-container">
+            <!-- Populated dynamically via app.js -->
+          </div>
+
+        </section>
+
+        <!-- ================================================================
+             VIEW 6: SETTINGS
+             ================================================================ -->
+        <section class="app-view" id="view-settings">
+          
+          <div class="settings-grid" id="settings-grid">
+            
+            <!-- Preferences Card -->
+            <div class="settings-card" id="settings-card-preferences">
+              <h3>
+                <i data-lucide="globe" style="color: var(--primary-600);"></i>
+                <span data-i18n="settings_pref_title">Language & Regional</span>
+              </h3>
+
+              <div class="setting-row">
+                <div class="setting-label">
+                  <h5 data-i18n="settings_lang_label">Application Language</h5>
+                  <p data-i18n="settings_lang_sub">Switch between Arabic (RTL) and English (LTR)</p>
+                </div>
+                <div class="toggle-pill-group">
+                  <button class="toggle-pill-btn active" id="btn-settings-lang-en">English</button>
+                  <button class="toggle-pill-btn" id="btn-settings-lang-ar">العربية</button>
+                </div>
+              </div>
+
+              <div class="setting-row">
+                <div class="setting-label">
+                  <h5 data-i18n="settings_units_label">Measurement Units</h5>
+                  <p data-i18n="settings_units_sub">Weight and height measurement standards</p>
+                </div>
+                <div class="toggle-pill-group">
+                  <button class="toggle-pill-btn active" id="btn-units-metric" data-i18n="unit_metric">Metric (kg/cm)</button>
+                  <button class="toggle-pill-btn" id="btn-units-imperial" data-i18n="unit_imperial">Imperial (lbs/in)</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Appearance & Theme -->
+            <div class="settings-card" id="settings-card-theme">
+              <h3>
+                <i data-lucide="palette" style="color: var(--primary-600);"></i>
+                <span data-i18n="settings_theme_title">Appearance</span>
+              </h3>
+
+              <div class="setting-row">
+                <div class="setting-label">
+                  <h5 data-i18n="settings_theme_label">Color Mode</h5>
+                  <p data-i18n="settings_theme_sub">Soft medical light or high-contrast clinical dark</p>
+                </div>
+                <div class="toggle-pill-group">
+                  <button class="toggle-pill-btn active" id="btn-theme-light" data-i18n="theme_light">Light</button>
+                  <button class="toggle-pill-btn" id="btn-theme-dark" data-i18n="theme_dark">Dark</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Clinical Safety Guardrails -->
+            <div class="settings-card" id="settings-card-safety">
+              <h3>
+                <i data-lucide="shield-check" style="color: var(--primary-600);"></i>
+                <span data-i18n="settings_safety_title">Clinical Safety & Guardrails</span>
+              </h3>
+
+              <div class="setting-row">
+                <div class="setting-label">
+                  <h5 data-i18n="safety_level_label">Safety Filtering Level</h5>
+                  <p data-i18n="safety_level_sub">Strict triage protection against non-educational requests</p>
+                </div>
+                <span class="status-chip success" data-i18n="strict_enabled">Strict Medical Safe</span>
+              </div>
+
+              <div class="setting-row">
+                <div class="setting-label">
+                  <h5 data-i18n="rag_retrieval_label">RAG Guideline Verification</h5>
+                  <p data-i18n="rag_retrieval_sub">Ground AI output in EASL & AASLD knowledge base</p>
+                </div>
+                <span class="status-chip primary" data-i18n="always_on">Always On</span>
+              </div>
+            </div>
+
+            <!-- Data & Session -->
+            <div class="settings-card" id="settings-card-data">
+              <h3>
+                <i data-lucide="database" style="color: var(--primary-600);"></i>
+                <span data-i18n="settings_data_title">Session & Data Management</span>
+              </h3>
+
+              <div class="setting-row">
+                <div class="setting-label">
+                  <h5 data-i18n="reset_metrics_label">Reset Demo Metrics</h5>
+                  <p data-i18n="reset_metrics_sub">Restore original clinical baseline data</p>
+                </div>
+                <button class="btn-secondary" id="btn-reset-patient-data" style="font-size: 0.8rem;">
+                  <i data-lucide="rotate-ccw" style="width: 14px; height: 14px;"></i>
+                  <span data-i18n="reset_btn">Reset Data</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Modal: Log Weight -->
+  <div class="modal-backdrop" id="modal-log-weight">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 data-i18n="modal_weight_title">Log Today's Body Weight</h3>
+        <button class="icon-action-btn" id="btn-close-weight-modal" aria-label="Close modal">
+          <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div style="margin-bottom: 1.25rem;">
+          <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.5rem;" data-i18n="weight_input_label">
+            Weight (kg)
+          </label>
+          <input 
+            type="number" 
+            step="0.1" 
+            min="30" 
+            max="250" 
+            class="search-input" 
+            id="input-new-weight" 
+            value="84.5" 
+          />
+          <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-top: 0.35rem;" data-i18n="weight_help_text">
+            Sustained 5–7% weight reduction directly improves metabolic steatosis.
+          </span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btn-cancel-weight-modal" data-i18n="cancel_btn">Cancel</button>
+        <button class="btn-primary" id="btn-save-weight" data-i18n="save_btn">Save Entry</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: AI Lab Explainer -->
+  <div class="modal-backdrop" id="modal-lab-explainer">
+    <div class="modal-card" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3 id="modal-lab-title">Clinical Lab Explanation</h3>
+        <button class="icon-action-btn" id="btn-close-lab-modal" aria-label="Close modal">
+          <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="modal-lab-content">
+        <!-- Content inserted dynamically -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="btn-close-lab-modal-footer" data-i18n="close_btn">Close</button>
+        <button class="btn-primary" id="btn-lab-modal-discuss-ai" data-i18n="discuss_in_chat">
+          <i data-lucide="bot-message-square" style="width: 16px; height: 16px;"></i>
+          <span>Ask Follow-up in Chat</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main JavaScript File -->
+  <script src="/app.js" defer></script>
+</body>
+</html>

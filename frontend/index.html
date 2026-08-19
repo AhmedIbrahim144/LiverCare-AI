@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LiverCare AI — Clinical Medical AI Assistant & Health Monitor</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div id="app-layout">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar" id="app-sidebar">
+      <button class="sidebar-toggle-btn" id="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="sidebar-header">
+        <div class="brand-logo-wrap">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div class="brand-title">
+          <span>LiverCare</span>
+          <span class="brand-ai">AI</span>
+          <span class="brand-badge">Clinical</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" id="sidebar-nav">
+        <button class="nav-item active" data-target="view-dashboard" onclick="showSection('view-dashboard')">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+          <span data-i18n="nav_dashboard">Dashboard</span>
+        </button>
+
+        <button class="nav-item" data-target="view-assistant" onclick="showSection('view-assistant')">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+          <span data-i18n="nav_assistant">AI Assistant</span>
+          <span class="nav-pill">RAG</span>
+        </button>
+
+        <button class="nav-item" data-target="view-medical" onclick="showSection('view-medical')">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span>
+          <span data-i18n="nav_medical">Medical AI Chat</span>
+          <span class="nav-pill" style="background:var(--accent-blue-600);">AI</span>
+        </button>
+
+        <button class="nav-item" data-target="view-health" onclick="showSection('view-health')">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
+          <span data-i18n="nav_health">My Health</span>
+        </button>
+
+        <button class="nav-item" data-target="view-labs" onclick="showSection('view-labs')">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"/><path d="M10 9V3"/><path d="M14 9V3"/><path d="M6 9l3.5 11a2 2 0 0 0 2 1h3a2 2 0 0 0 2-1L20 9"/></svg></span>
+          <span data-i18n="nav_labs">Lab Results</span>
+        </button>
+
+        <button class="nav-item" data-target="view-lab-analyzer" onclick="showSection('view-lab-analyzer')">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span>
+          <span data-i18n="nav_lab_analyzer">Lab Analyzer</span>
+          <span class="nav-pill" style="background:#8b5cf6;">IMG</span>
+        </button>
+
+        <button class="nav-item" data-target="view-settings" onclick="showSection('view-settings')">
+          <span class="nav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></span>
+          <span data-i18n="nav_settings">Settings</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="clinical-badge-card">
+          <div class="clinical-badge-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+          <div class="clinical-badge-text">
+            <h5 data-i18n="evidence_verified">EASL & AASLD</h5>
+            <p data-i18n="evidence_subtitle">Clinical Guidelines 2024</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Shell -->
+    <main class="app-main" id="app-main">
+      
+      <!-- Top Application Header -->
+      <header class="app-header" id="app-header">
+        <div class="header-left">
+          <button class="mobile-menu-btn" id="mobile-menu-toggle" onclick="toggleMobileSidebar()" aria-label="Toggle navigation menu">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <div class="page-breadcrumb">
+            <h1 class="page-title" id="current-page-title" data-i18n="page_dashboard">Dashboard</h1>
+            <span class="page-subtitle" id="current-page-subtitle" data-i18n="page_dashboard_sub">Patient Health Overview & Metabolic Liver Monitoring</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="toggle-pill-group" id="language-toggle-group">
+            <button class="toggle-pill-btn active" id="btn-lang-en" onclick="setLanguage('en')">English</button>
+            <button class="toggle-pill-btn" id="btn-lang-ar" onclick="setLanguage('ar')">&#x627;&#x644;&#x639;&#x631;&#x628;&#x64A;&#x629;</button>
+          </div>
+
+          <button class="icon-action-btn" id="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Toggle theme">
+            <svg id="theme-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+
+          <!-- Auth Button -->
+          <button class="auth-header-btn" id="auth-header-btn" onclick="openAuthModal('login')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span id="auth-btn-text" data-i18n="login_btn">Login</span>
+          </button>
+
+          <!-- User Profile (hidden by default) -->
+          <div class="user-profile-badge" id="user-profile-badge" style="display:none;">
+            <div class="user-avatar-circle" id="user-avatar-circle">U</div>
+            <span id="user-display-name">User</span>
+            <button class="btn-logout-sm" onclick="handleLogout()" title="Logout">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            </button>
+          </div>
+
+          <div class="patient-header-badge" id="patient-header-badge">
+            <div class="patient-avatar-mini" id="patient-avatar-letter">A</div>
+            <div class="patient-header-info">
+              <h6 id="header-patient-name">Patient</h6>
+              <span id="header-patient-diag">Health Profile</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dynamic Content Body -->
+      <div class="content-container" id="content-container">
+        
+        <div class="medical-disclaimer-banner" id="medical-disclaimer-banner">
+          <svg class="disclaimer-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <p class="disclaimer-text" data-i18n="medical_disclaimer_text">
+            <strong>Medical Notice:</strong> LiverCare AI provides educational information and clinical guideline synthesis. It does not replace professional medical diagnosis, advice, or emergency care.
+          </p>
+        </div>
+
+        <!-- VIEW 1: DASHBOARD -->
+        <section class="app-view active-view" id="view-dashboard">
+          
+          <div class="greeting-hero-card" id="greeting-hero-card">
+            <div class="greeting-text" id="greeting-text">
+              <h2 id="greeting-heading" data-i18n="greeting_heading">Welcome to LiverCare AI</h2>
+              <p id="greeting-desc" data-i18n="greeting_desc">
+                Your personal AI companion for fatty liver care. Ask questions about your health, track your progress, and understand your lab results.
+              </p>
+              <div class="greeting-meta" id="greeting-meta">
+                <span class="status-chip success"><span data-i18n="rag_active">RAG Active</span></span>
+                <span class="status-chip primary"><span data-i18n="easl_guidelines">EASL & AASLD Guidelines</span></span>
+              </div>
+            </div>
+            <div class="hero-action-box" id="hero-action-box">
+              <button class="btn-primary" onclick="showSection('view-assistant')"><span data-i18n="btn_consult_ai">Consult AI Assistant</span></button>
+              <button class="btn-secondary" onclick="showSection('view-health')"><span data-i18n="btn_log_weight">My Health Profile</span></button>
+            </div>
+          </div>
+
+          <div class="metrics-grid" id="metrics-grid">
+            <div class="metric-card" id="metric-card-profile">
+              <div class="metric-header">
+                <div class="metric-title-group"><h4 data-i18n="metric_profile">Patient Profile</h4></div>
+                <div class="metric-icon-box teal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+              </div>
+              <div class="metric-value-box"><span class="metric-value" id="val-profile-status">--</span></div>
+              <div class="metric-footer"><span style="color: var(--text-muted);" data-i18n="profile_status_hint">Set up your profile for personalized insights</span></div>
+            </div>
+
+            <div class="metric-card" id="metric-card-bmi">
+              <div class="metric-header">
+                <div class="metric-title-group"><h4 data-i18n="metric_bmi">Body Mass Index (BMI)</h4></div>
+                <div class="metric-icon-box blue"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.73 18l-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><line x1="12" y1="9" x2="12" y2="13"/></svg></div>
+              </div>
+              <div class="metric-value-box">
+                <span class="metric-value" id="val-current-bmi">--</span>
+                <span class="metric-unit">kg/m&#xB2;</span>
+              </div>
+              <div class="metric-footer"><span id="bmi-status" class="status-chip" style="padding: 0.15rem 0.5rem; font-size: 0.72rem;">--</span></div>
+            </div>
+
+            <div class="metric-card" id="metric-card-activity">
+              <div class="metric-header">
+                <div class="metric-title-group"><h4 data-i18n="metric_activity">Activity Level</h4></div>
+                <div class="metric-icon-box purple"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+              </div>
+              <div class="metric-value-box"><span class="metric-value" id="val-current-activity">--</span></div>
+              <div class="metric-footer"><span style="color: var(--text-muted);" data-i18n="activity_hint">Based on your profile</span></div>
+            </div>
+
+            <div class="metric-card" id="metric-card-tracking">
+              <div class="metric-header">
+                <div class="metric-title-group"><h4 data-i18n="metric_tracking">Health Tracking</h4></div>
+                <div class="metric-icon-box emerald"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+              </div>
+              <div class="metric-value-box">
+                <span class="metric-value" id="val-tracking-count">0</span>
+                <span class="metric-unit" data-i18n="unit_entries">entries</span>
+              </div>
+              <div class="metric-footer"><span style="color: var(--text-muted);" data-i18n="tracking_hint">Log weight & activity regularly</span></div>
+            </div>
+          </div>
+
+          <div class="ai-shortcut-card" id="ai-shortcut-card">
+            <div class="ai-shortcut-top">
+              <div class="ai-shortcut-title-group">
+                <div class="ai-avatar-sparkle"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg></div>
+                <div>
+                  <h3 data-i18n="shortcut_title">Ask LiverCare AI Assistant</h3>
+                  <p data-i18n="shortcut_subtitle">Instant evidence-based insights grounded in EASL 2024 & AASLD clinical practice guidelines.</p>
+                </div>
+              </div>
+              <button class="btn-primary" onclick="showSection('view-assistant')" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+                <span data-i18n="open_chat">Open Chat</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </button>
+            </div>
+            <div class="prompt-chips-grid" id="dashboard-prompt-chips">
+              <button class="prompt-chip" onclick="askFromDashboard(this)" data-en="What is fatty liver disease?" data-ar="&#x645;&#x627; &#x647;&#x648; &#x627;&#x644;&#x643;&#x628;&#x62F; &#x627;&#x644;&#x62F;&#x647;&#x646;&#x64A;&#x61F;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg>
+                What is fatty liver disease?
+              </button>
+              <button class="prompt-chip" onclick="askFromDashboard(this)" data-en="What foods are best for fatty liver?" data-ar="&#x645;&#x627; &#x647;&#x64A; &#x623;&#x643;&#x644; &#x627;&#x644;&#x645;&#x646;&#x627;&#x633;&#x628; &#x627;&#x644;&#x645;&#x646;&#x627;&#x633;&#x628;&#x629; &#x644;&#x644;&#x643;&#x628;&#x62F; &#x627;&#x644;&#x62F;&#x647;&#x646;&#x64A;&#x61F;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75"/></svg>
+                Best foods for fatty liver
+              </button>
+              <button class="prompt-chip" onclick="askFromDashboard(this)" data-en="What lifestyle changes are recommended?" data-ar="&#x645;&#x627; &#x647;&#x64A; &#x627;&#x644;&#x62A;&#x63A;&#x64A;&#x64A;&#x631;&#x627;&#x62A; &#x641;&#x64A; &#x646;&#x645;&#x637; &#x627;&#x644;&#x62D;&#x64A;&#x627;&#x629; &#x627;&#x644;&#x645;&#x648;&#x635;&#x649; &#x628;&#x647;&#x627;&#x61F;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3l4 8 5-5 5 15H2z"/><line x1="2" y1="21" x2="22" y2="21"/></svg>
+                Lifestyle changes
+              </button>
+              <button class="prompt-chip" onclick="askFromDashboard(this)" data-en="What does ALT measure?" data-ar="&#x645;&#x627; &#x645;&#x639;&#x646;&#x649; &#x62A;&#x62D;&#x644;&#x64A;&#x644; ALT&#x61F;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"/><path d="M10 9V3"/><path d="M14 9V3"/><path d="M6 9l3.5 11a2 2 0 0 0 2 1h3a2 2 0 0 0 2-1L20 9"/></svg>
+                What does ALT measure?
+              </button>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- VIEW 2: RAG AI CHAT ASSISTANT -->
+        <section class="app-view" id="view-assistant">
+          <div class="chat-page-container" id="chat-page-container">
+            
+            <div class="chat-header-bar" id="chat-header-bar">
+              <div class="chat-assistant-meta">
+                <div class="chat-assistant-avatar" id="chat-assistant-avatar">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="9" cy="16" r="1"/><circle cx="15" cy="16" r="1"/><path d="M12 11V7"/><polyline points="8 7 12 3 16 7"/></svg>
+                  <span class="status-online-dot"></span>
+                </div>
+                <div class="chat-assistant-info">
+                  <h4>
+                    <span>LiverCare AI Specialist</span>
+                    <span class="brand-badge">Clinical RAG</span>
+                  </h4>
+                  <p id="chat-status-text" data-i18n="chat_grounded_status">Grounded in EASL 2024, AASLD & WHO Clinical Guidelines</p>
+                </div>
+              </div>
+
+              <div class="chat-actions-group">
+                <button class="btn-secondary" id="btn-clear-chat" onclick="clearChat()" title="Clear conversation" style="padding: 0.4rem 0.85rem; font-size: 0.8rem;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  <span data-i18n="clear_chat">Clear Chat</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="chat-messages-scroll" id="chat-messages-container">
+              <div class="chat-message-row ai" id="initial-ai-welcome-message">
+                <div class="message-avatar ai-avatar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="9" cy="16" r="1"/><circle cx="15" cy="16" r="1"/><path d="M12 11V7"/><polyline points="8 7 12 3 16 7"/></svg></div>
+                <div class="message-body-wrap">
+                  <div class="message-bubble" id="welcome-message-bubble">
+                    <p data-i18n="ai_welcome_p1">Hello! I am your <strong>LiverCare AI</strong> medical assistant.</p>
+                    <p data-i18n="ai_welcome_p2">I can help you understand fatty liver disease, lab results (ALT, AST, FIB-4), dietary recommendations, and evidence-based clinical guidelines.</p>
+                    <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.5rem;" data-i18n="ai_welcome_disclaimer">
+                      *Note: I provide educational clinical guidance and do not provide medical diagnosis or emergency prescriptions.*
+                    </p>
+                  </div>
+                  <span class="message-timestamp">LiverCare AI &bull; Grounded Evidence</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="chat-input-wrapper" id="chat-input-wrapper">
+              <div class="prompt-chips-grid" id="chat-quick-suggestions" style="margin-bottom: 0.25rem;">
+                <button class="prompt-chip" onclick="askFromChat(this)" data-en="What dietary changes reduce liver fat?" data-ar="&#x645;&#x627; &#x627;&#x644;&#x62A;&#x63A;&#x64A;&#x64A;&#x631;&#x627;&#x62A; &#x627;&#x644;&#x63A;&#x630;&#x627;&#x626;&#x64A;&#x629; &#x627;&#x644;&#x62A;&#x64A; &#x62A;&#x642;&#x644;&#x644; &#x62F;&#x647;&#x648;&#x646; &#x627;&#x644;&#x643;&#x628;&#x62F;&#x61F;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75"/></svg>
+                  Diet for MASLD
+                </button>
+                <button class="prompt-chip" onclick="askFromChat(this)" data-en="How do I interpret my ALT result?" data-ar="&#x643;&#x64A;&#x641; &#x623;&#x641;&#x647;&#x645; &#x646;&#x62A;&#x627;&#x626;&#x62C; &#x62A;&#x62D;&#x644;&#x64A;&#x644; ALT&#x61F;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6"/><path d="M10 9V3"/><path d="M14 9V3"/><path d="M6 9l3.5 11a2 2 0 0 0 2 1h3a2 2 0 0 0 2-1L20 9"/></svg>
+                  Interpret ALT / AST
+                </button>
+                <button class="prompt-chip" onclick="askFromChat(this)" data-en="What are safe exercise recommendations?" data-ar="&#x645;&#x627; &#x647;&#x64A; &#x62A;&#x635;&#x639;&#x64A;&#x627;&#x62A; &#x627;&#x644;&#x645;&#x631;&#x646;&#x636; &#x627;&#x644;&#x622;&#x645;&#x646;&#x629; &#x644;&#x644;&#x643;&#x628;&#x62F;&#x61F;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                  Exercise guidelines
+                </button>
+              </div>
+
+              <div class="chat-input-controls">
+                <button class="btn-voice-chat" id="rag-mic-btn" onclick="toggleVoiceInput('rag')" title="Voice input">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                </button>
+                <textarea class="chat-textarea" id="chat-user-input" placeholder="Ask a question about your liver health, labs, or guidelines..." data-i18n-placeholder="chat_placeholder" rows="1"></textarea>
+                <button class="btn-send-chat" id="btn-send-message" onclick="sendChat()" aria-label="Send message">
+                  <span data-i18n="send_btn">Send</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
+              </div>
+
+              <div class="chat-input-hints">
+                <span data-i18n="enter_to_send_hint">Press Enter to send &bull; Shift + Enter for new line</span>
+                <span style="color: var(--primary-600); font-weight: 600;" data-i18n="safety_active">Safety Guardrail Active</span>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- VIEW 3: MEDICAL AI CHAT -->
+        <section class="app-view" id="view-medical">
+          <div class="chat-page-container">
+            <div class="chat-header-bar">
+              <div class="chat-assistant-meta">
+                <div class="chat-assistant-avatar" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                  <span class="status-online-dot"></span>
+                </div>
+                <div class="chat-assistant-info">
+                  <h4>
+                    <span data-i18n="medical_chat_title">Medical AI Assistant</span>
+                    <span class="brand-badge" style="background:var(--accent-blue-600);">General AI</span>
+                  </h4>
+                  <p data-i18n="medical_chat_subtitle">General liver & medical questions (no RAG)</p>
+                </div>
+              </div>
+              <div class="chat-actions-group">
+                <button class="btn-secondary" onclick="clearMedicalChat()" title="Clear" style="padding: 0.4rem 0.85rem; font-size: 0.8rem;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  <span data-i18n="clear_chat">Clear Chat</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="chat-messages-scroll" id="medical-chat-messages">
+              <div class="chat-message-row ai">
+                <div class="message-avatar ai-avatar" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                </div>
+                <div class="message-body-wrap">
+                  <div class="message-bubble">
+                    <p data-i18n="medical_welcome_p1">Hello! I am your <strong>Medical AI Assistant</strong>.</p>
+                    <p data-i18n="medical_welcome_p2">I can answer general medical questions about liver health, hepatology, and related topics. I support Arabic, English, and Egyptian Arabic.</p>
+                    <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.5rem;" data-i18n="medical_welcome_disclaimer">
+                      *This assistant provides general medical information only. It does not diagnose, prescribe, or replace professional medical advice.*
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="chat-input-wrapper">
+              <div class="chat-input-controls">
+                <button class="btn-voice-chat" id="med-mic-btn" onclick="toggleVoiceInput('medical')" title="Voice input">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+                </button>
+                <textarea class="chat-textarea" id="medical-chat-input" placeholder="Ask a general medical question..." data-i18n-placeholder="medical_chat_placeholder" rows="1"></textarea>
+                <button class="btn-send-chat" onclick="sendMedicalChat()" style="background: var(--accent-blue-600);">
+                  <span data-i18n="send_btn">Send</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </button>
+              </div>
+              <div class="chat-input-hints">
+                <span data-i18n="medical_chat_hint">General medical information &mdash; not a substitute for professional advice</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- VIEW 4: MY HEALTH & TRACKING -->
+        <section class="app-view" id="view-health">
+          
+          <div class="patient-profile-card" id="patient-profile-card" style="margin-bottom: 1.5rem;">
+            <div class="card-header-flex">
+              <h3>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary-600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span data-i18n="patient_profile_title">Patient Clinical Profile</span>
+              </h3>
+            </div>
+            <div class="patient-demographics-grid" id="patient-demographics-grid">
+              <div class="lab-mini-item"><div><span style="font-size: 0.75rem; color: var(--text-muted);" data-i18n="patient_name_label">Patient Name</span><h5 id="profile-name-val">--</h5></div></div>
+              <div class="lab-mini-item"><div><span style="font-size: 0.75rem; color: var(--text-muted);" data-i18n="patient_age_label">Age & Gender</span><h5 id="profile-age-sex-val">--</h5></div></div>
+              <div class="lab-mini-item"><div><span style="font-size: 0.75rem; color: var(--text-muted);" data-i18n="patient_bmi_label">BMI</span><h5 id="profile-bmi-val" style="color: var(--primary-700);">--</h5></div></div>
+              <div class="lab-mini-item"><div><span style="font-size: 0.75rem; color: var(--text-muted);" data-i18n="patient_activity_label">Activity Level</span><h5 id="profile-activity-val">--</h5></div></div>
+            </div>
+          </div>
+
+          <div class="dashboard-grid-2col" style="margin-bottom: 1.5rem;">
+            
+            <div class="form-card" id="card-profile-form">
+              <div class="card-header-flex">
+                <h3>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary-600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  <span data-i18n="edit_profile_title">Update Profile</span>
+                </h3>
+              </div>
+              <form id="profileForm" onsubmit="saveProfile(event)">
+                <div class="form-grid">
+                  <div class="form-group"><label data-i18n="profile_name">Name</label><input type="text" id="pName" placeholder="Your name"></div>
+                  <div class="form-group"><label data-i18n="profile_age">Age</label><input type="number" id="pAge" min="1" max="120"></div>
+                  <div class="form-group">
+                    <label data-i18n="profile_sex">Sex</label>
+                    <select id="pSex"><option value="">--</option><option value="male" data-i18n="sex_male">Male</option><option value="female" data-i18n="sex_female">Female</option></select>
+                  </div>
+                  <div class="form-group"><label data-i18n="profile_weight">Weight (kg)</label><input type="number" id="pWeight" step="0.1" min="1"></div>
+                  <div class="form-group"><label data-i18n="profile_height">Height (m)</label><input type="number" id="pHeight" step="0.01" min="0.5" max="2.5"></div>
+                  <div class="form-group"><label data-i18n="profile_bmi">BMI (auto-calculated)</label><input type="text" id="pBmi" readonly></div>
+                  <div class="form-group">
+                    <label data-i18n="profile_diabetes">Diabetes</label>
+                    <select id="pDiabetes"><option value="false" data-i18n="no">No</option><option value="true" data-i18n="yes">Yes</option></select>
+                  </div>
+                  <div class="form-group">
+                    <label data-i18n="profile_hypertension">Hypertension</label>
+                    <select id="pHypertension"><option value="false" data-i18n="no">No</option><option value="true" data-i18n="yes">Yes</option></select>
+                  </div>
+                  <div class="form-group">
+                    <label data-i18n="profile_activity">Activity Level</label>
+                    <select id="pActivity"><option value="low" data-i18n="activity_low">Low</option><option value="moderate" data-i18n="activity_moderate">Moderate</option><option value="high" data-i18n="activity_high">High</option></select>
+                  </div>
+                </div>
+                <button type="submit" class="btn-primary" data-i18n="profile_save">Save Profile</button>
+              </form>
+            </div>
+
+            <div class="form-card" id="card-weight-tracker">
+              <div class="card-header-flex">
+                <h3>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary-600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                  <span data-i18n="weight_history_title">Weight Progression Log</span>
+                </h3>
+              </div>
+              <div id="weight-chart-container" style="margin-bottom: 1rem;">
+                <canvas id="trackingChart" width="500" height="160" style="width: 100%; height: 160px;"></canvas>
+              </div>
+              <form id="trackingForm" onsubmit="saveTracking(event)">
+                <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+                  <div class="form-group"><label data-i18n="tracking_date">Date</label><input type="date" id="tDate"></div>
+                  <div class="form-group"><label data-i18n="tracking_weight">Weight (kg)</label><input type="number" id="tWeight" step="0.1"></div>
+                  <div class="form-group"><label data-i18n="tracking_activity">Activity</label><input type="text" id="tActivity" placeholder="e.g., 30 min walk"></div>
+                  <div class="form-group"><label data-i18n="tracking_notes">Notes</label><input type="text" id="tNotes"></div>
+                </div>
+                <button type="submit" class="btn-primary" data-i18n="tracking_save">Save Entry</button>
+              </form>
+              <div class="lab-mini-list" id="weight-history-table-body" style="margin-top: 1rem;"></div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- VIEW 5: LAB RESULTS -->
+        <section class="app-view" id="view-labs">
+          <div class="labs-header-banner" id="labs-header-banner">
+            <div>
+              <h2 style="font-size: 1.4rem; font-weight: 800;" data-i18n="labs_banner_title">Lab Explanation</h2>
+              <p style="font-size: 0.88rem; color: var(--text-secondary);" data-i18n="labs_banner_sub">Select a lab test and enter your value to get an explanation from the medical knowledge base.</p>
+            </div>
+          </div>
+          <div class="form-card" style="margin-bottom: 1.5rem;">
+            <form id="labForm" onsubmit="explainLab(event)">
+              <div class="form-grid" style="grid-template-columns: 1fr 1fr 1fr;">
+                <div class="form-group">
+                  <label data-i18n="labs_test">Lab Test</label>
+                  <select id="labTest">
+                    <option value="ALT">ALT (Alanine Aminotransferase)</option>
+                    <option value="AST">AST (Aspartate Aminotransferase)</option>
+                    <option value="HbA1c">HbA1c (Glycated Hemoglobin)</option>
+                    <option value="GGT">GGT (Gamma-Glutamyl Transferase)</option>
+                    <option value="Triglycerides">Triglycerides</option>
+                    <option value="Cholesterol">Total Cholesterol</option>
+                    <option value="LDL">LDL Cholesterol</option>
+                    <option value="HDL">HDL Cholesterol</option>
+                    <option value="Albumin">Albumin</option>
+                    <option value="Bilirubin">Bilirubin</option>
+                  </select>
+                </div>
+                <div class="form-group"><label data-i18n="labs_value">Value</label><input type="number" id="labValue" step="0.1" required></div>
+                <div class="form-group"><label data-i18n="labs_unit">Unit (optional)</label><input type="text" id="labUnit" placeholder="e.g., U/L"></div>
+              </div>
+              <button type="submit" class="btn-primary" data-i18n="labs_explain">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg>
+                Explain This Result
+              </button>
+            </form>
+          </div>
+          <div id="labResult" class="lab-result-card" style="display: none;"></div>
+        </section>
+
+        <!-- VIEW 6: LAB IMAGE ANALYZER -->
+        <section class="app-view" id="view-lab-analyzer">
+          <div class="labs-header-banner" style="background: linear-gradient(135deg, #f0f9ff, #e0f2fe);">
+            <div>
+              <h2 style="font-size: 1.4rem; font-weight: 800; color: #1e40af;" data-i18n="lab_analyzer_title">Lab Report Image Analyzer</h2>
+              <p style="font-size: 0.88rem; color: var(--text-secondary);" data-i18n="lab_analyzer_sub">Upload a photo of your lab report and get AI-powered analysis of your results.</p>
+            </div>
+          </div>
+
+          <div class="form-card" style="margin-bottom: 1.5rem;">
+            <div class="lab-upload-zone" id="lab-upload-zone" onclick="document.getElementById('lab-image-input').click()">
+              <input type="file" id="lab-image-input" accept="image/*" style="display:none" onchange="handleLabImageUpload(event)">
+              <div class="upload-icon-wrap">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--primary-500)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </div>
+              <h3 data-i18n="upload_lab_image">Upload Lab Report Image</h3>
+              <p data-i18n="upload_lab_hint">Click or drag & drop an image (JPG, PNG)</p>
+            </div>
+
+            <div class="lab-preview-section" id="lab-preview-section" style="display:none;">
+              <div class="lab-image-preview-wrap">
+                <img id="lab-preview-img" src="" alt="Lab Report Preview">
+                <button class="btn-remove-lab-image" onclick="removeLabImage()">x</button>
+              </div>
+              <div class="lab-controls-row">
+                <button class="btn-primary" id="btn-analyze-lab" onclick="analyzeLabImage()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.2L22 12l-7.6 2.8L12 22l-2.4-7.2L2 12l7.6-2.8z"/></svg>
+                  <span data-i18n="analyze_btn">Analyze Report</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div id="lab-analysis-result" class="lab-result-card" style="display:none;"></div>
+        </section>
+
+        <!-- VIEW 7: SETTINGS -->
+        <section class="app-view" id="view-settings">
+          <div class="settings-grid" id="settings-grid">
+            
+            <div class="settings-card" id="settings-card-preferences">
+              <h3>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary-600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                <span data-i18n="settings_pref_title">Language & Regional</span>
+              </h3>
+              <div class="setting-row">
+                <div class="setting-label">
+                  <h5 data-i18n="settings_lang_label">Application Language</h5>
+                  <p data-i18n="settings_lang_sub">Switch between Arabic (RTL) and English (LTR)</p>
+                </div>
+                <div class="toggle-pill-group">
+                  <button class="toggle-pill-btn active" id="btn-settings-lang-en" onclick="setLanguage('en')">English</button>
+                  <button class="toggle-pill-btn" id="btn-settings-lang-ar" onclick="setLanguage('ar')">&#x627;&#x644;&#x639;&#x631;&#x628;&#x64A;&#x629;</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-card" id="settings-card-theme">
+              <h3>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary-600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="var(--primary-600)"/><circle cx="17.5" cy="10.5" r=".5" fill="var(--primary-600)"/><circle cx="8.5" cy="7.5" r=".5" fill="var(--primary-600)"/><circle cx="6.5" cy="12.5" r=".5" fill="var(--primary-600)"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+                <span data-i18n="settings_theme_title">Appearance</span>
+              </h3>
+              <div class="setting-row">
+                <div class="setting-label">
+                  <h5 data-i18n="settings_theme_label">Color Mode</h5>
+                  <p data-i18n="settings_theme_sub">Soft medical light or high-contrast clinical dark</p>
+                </div>
+                <div class="toggle-pill-group">
+                  <button class="toggle-pill-btn active" id="btn-theme-light" onclick="setTheme('light')" data-i18n="theme_light">Light</button>
+                  <button class="toggle-pill-btn" id="btn-theme-dark" onclick="setTheme('dark')" data-i18n="theme_dark">Dark</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="settings-card" id="settings-card-safety">
+              <h3>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary-600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span data-i18n="settings_safety_title">Clinical Safety & Guardrails</span>
+              </h3>
+              <div class="setting-row">
+                <div class="setting-label">
+                  <h5 data-i18n="safety_level_label">Safety Filtering Level</h5>
+                  <p data-i18n="safety_level_sub">Strict triage protection against non-educational requests</p>
+                </div>
+                <span class="status-chip success" data-i18n="strict_enabled">Strict Medical Safe</span>
+              </div>
+              <div class="setting-row">
+                <div class="setting-label">
+                  <h5 data-i18n="rag_retrieval_label">RAG Guideline Verification</h5>
+                  <p data-i18n="rag_retrieval_sub">Ground AI output in EASL & AASLD knowledge base</p>
+                </div>
+                <span class="status-chip primary" data-i18n="always_on">Always On</span>
+              </div>
+            </div>
+
+            <div class="settings-card" id="settings-card-data">
+              <h3>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary-600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                <span data-i18n="settings_data_title">Session & Data Management</span>
+              </h3>
+              <div class="setting-row">
+                <div class="setting-label">
+                  <h5 data-i18n="reset_metrics_label">Reset Chat</h5>
+                  <p data-i18n="reset_metrics_sub">Clear the current conversation history</p>
+                </div>
+                <button class="btn-secondary" onclick="clearChat()" style="font-size: 0.8rem;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  <span data-i18n="reset_btn">Clear Chat</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- AUTH MODAL -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="auth-modal-backdrop" id="auth-modal-backdrop" style="display:none;" onclick="closeAuthModal()">
+    <div class="auth-modal" id="auth-modal" onclick="event.stopPropagation()">
+      
+      <!-- Tabs: Login / Register -->
+      <div class="auth-view-tabs" id="auth-view-tabs">
+        <div class="auth-modal-header">
+          <h3 data-i18n="auth_title">Account</h3>
+          <button class="auth-close-btn" onclick="closeAuthModal()">x</button>
+        </div>
+
+        <div class="auth-alert" id="auth-alert" style="display:none;"></div>
+
+        <div class="auth-tabs-row">
+          <button class="auth-tab-btn active" id="tab-btn-login" onclick="switchAuthTab('login')" data-i18n="auth_tab_login">Login</button>
+          <button class="auth-tab-btn" id="tab-btn-register" onclick="switchAuthTab('register')" data-i18n="auth_tab_register">Register</button>
+        </div>
+
+        <!-- Login Form -->
+        <form class="auth-form" id="form-login" onsubmit="handleLoginSubmit(event)">
+          <div class="auth-form-group">
+            <label data-i18n="auth_email">Email</label>
+            <input type="email" id="login-email" required autocomplete="email">
+          </div>
+          <div class="auth-form-group">
+            <label data-i18n="auth_password">Password</label>
+            <input type="password" id="login-password" required autocomplete="current-password">
+          </div>
+          <button type="submit" class="btn-primary auth-submit-btn" data-i18n="auth_login_btn">Sign In</button>
+          <div class="auth-divider"><span data-i18n="auth_or">or</span></div>
+          <button type="button" class="btn-google-auth" onclick="handleGoogleSignIn()">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            <span data-i18n="auth_google">Sign in with Google</span>
+          </button>
+        </form>
+
+        <!-- Register Form -->
+        <form class="auth-form" id="form-register" style="display:none;" onsubmit="handleRegisterSubmit(event)">
+          <div class="auth-form-group">
+            <label data-i18n="auth_full_name">Full Name</label>
+            <input type="text" id="reg-name" required>
+          </div>
+          <div class="auth-form-group">
+            <label data-i18n="auth_email">Email</label>
+            <input type="email" id="reg-email" required autocomplete="email">
+          </div>
+          <div class="auth-form-group">
+            <label data-i18n="auth_password">Password</label>
+            <input type="password" id="reg-password" required minlength="6" autocomplete="new-password">
+          </div>
+          <div class="auth-form-group">
+            <label data-i18n="auth_confirm_password">Confirm Password</label>
+            <input type="password" id="reg-password-confirm" required minlength="6">
+          </div>
+          <button type="submit" class="btn-primary auth-submit-btn" data-i18n="auth_register_btn">Create Account</button>
+          <div class="auth-divider"><span data-i18n="auth_or">or</span></div>
+          <button type="button" class="btn-google-auth" onclick="handleGoogleSignIn()">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            <span data-i18n="auth_google">Sign in with Google</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- OTP View -->
+      <div class="auth-view-otp" id="auth-view-otp" style="display:none;">
+        <div class="auth-modal-header">
+          <h3 data-i18n="auth_verify_title">Verify Email</h3>
+          <button class="auth-close-btn" onclick="closeAuthModal()">x</button>
+        </div>
+        <div class="auth-alert" id="otp-alert" style="display:none;"></div>
+        <p style="text-align:center;margin-bottom:1rem;color:var(--text-secondary);" data-i18n="otp_sent_to">Verification code sent to:</p>
+        <p style="text-align:center;font-weight:700;margin-bottom:1.5rem;" id="otp-target-email"></p>
+        <form onsubmit="handleVerifyOtpSubmit(event)">
+          <div class="auth-form-group">
+            <label data-i18n="otp_code_label">6-digit code</label>
+            <input type="text" id="otp-input" maxlength="6" pattern="[0-9]{6}" required style="text-align:center;font-size:1.5rem;letter-spacing:8px;">
+          </div>
+          <button type="submit" class="btn-primary auth-submit-btn" data-i18n="otp_verify_btn">Verify</button>
+        </form>
+        <div class="otp-resend-row">
+          <button class="btn-text" id="btn-resend-otp" onclick="handleResendOtp()" data-i18n="otp_resend">Resend Code</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

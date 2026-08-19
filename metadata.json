@@ -1,0 +1,6 @@
+{
+  "name": "LiverCare AI",
+  "description": "Modern medical AI application for liver health monitoring, clinical guidelines RAG retrieval, and patient lab results explanation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

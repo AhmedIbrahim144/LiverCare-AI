@@ -1,0 +1,61 @@
+{
+  "status": "success",
+  "documents_processed": 12,
+  "pages_processed": 229,
+  "chunks_created": 890,
+  "embeddings_created": 890,
+  "vector_store": "D:\\LiverCare-AI\\vector_db\\chroma",
+  "loaded_files": [
+    {
+      "name": "A-closer-look-at-the-innovative-PAGED-B-score_2024.pdf",
+      "pages": 2
+    },
+    {
+      "name": "aasld-practice-guidance-on-the-clinical-assessment-and.pdf",
+      "pages": 39
+    },
+    {
+      "name": "An-overweight-female-with-a-history-of-allergies-a.pdf",
+      "pages": 3
+    },
+    {
+      "name": "EASL\u2013EASD\u2013EASO-Clinical-Practice-Guidelines-on-the.pdf",
+      "pages": 51
+    },
+    {
+      "name": "EMC10-modulates-hepatic-ER-stress-and-steatosis-in.pdf",
+      "pages": 14
+    },
+    {
+      "name": "FGF21-agonists--An-emerging-therapeutic-for-metabo.pdf",
+      "pages": 15
+    },
+    {
+      "name": "Genetic-risk-accentuates-dietary-effects-on-hepati.pdf",
+      "pages": 11
+    },
+    {
+      "name": "Individuals-with-cardiometabolic-risk-factors-are-.pdf",
+      "pages": 3
+    },
+    {
+      "name": "nihms-1948413.pdf",
+      "pages": 76
+    },
+    {
+      "name": "Primary-hypobetalipoproteinemia-as-a-risk-factor-f.pdf",
+      "pages": 1
+    },
+    {
+      "name": "Prospective-validation-of-the-EASL-management-algo.pdf",
+      "pages": 11
+    },
+    {
+      "name": "Sex-specific-associations-of-steatotic-liver-disea.pdf",
+      "pages": 3
+    }
+  ],
+  "failed_files": [],
+  "embedding_model": "BAAI/bge-small-en-v1.5",
+  "timestamp": "2026-08-17T07:42:39.908591"
+}

@@ -1,0 +1,11 @@
+question,expected_page,category,retrieval
+"What is fatty liver disease?",1,medical_definition,high
+"What are the diagnostic criteria for NAFLD?",1,diagnostic_criteria,high
+"What lifestyle modifications are recommended?",1,lifestyle_recommendations,high
+"What is the role of ALT in liver assessment?",1,lab_interpretation,high
+"What is the EASL-EASD-EASO guideline?",1,guideline_reference,high
+"What dietary changes help with fatty liver?",1,nutrition,high
+"What exercise is recommended for NAFLD patients?",1,exercise,medium
+"What imaging techniques are used?",1,diagnostics,medium
+"What is the relationship between obesity and NAFLD?",1,risk_factors,high
+"What medications are approved for MASH?",1,treatment,medium
