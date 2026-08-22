@@ -190,70 +190,69 @@ flowchart TD
 ## 📁 Project Structure
 LiverCare-AI/
 ├── backend/
-│ ├── main.py # FastAPI app assembly, routers, static file serving
-│ ├── config.py # Central configuration & environment-driven settings
-│ ├── security.py # Bcrypt hashing, custom JWT, OTP generation
-│ ├── email_service.py # OTP email dispatch (SMTP or console fallback)
-│ │
-│ ├── ai/
-│ │ ├── llm.py # Ollama integration, output cleaning, fallback answers
-│ │ ├── prompts.py # Bilingual RAG & general-knowledge system prompts
-│ │ └── safety.py # Regex-based bilingual safety guardrails
-│ │
-│ ├── rag/
-│ │ ├── loader.py # Category-aware PDF loading with page-level metadata
-│ │ ├── chunker.py # Recursive character-based chunking
-│ │ ├── embeddings.py # Local (FastEmbed) / OpenAI embedding provider
-│ │ ├── vectorstore.py # ChromaDB creation, querying, deletion
-│ │ ├── retriever.py # Similarity search + evidence-strength classification
-│ │ ├── citations.py # Citation filtering & formatting
-│ │ └── ingest.py # End-to-end ingestion pipeline (load → chunk → embed)
-│ │
-│ ├── api/
-│ │ ├── auth.py # Register, OTP verify/resend, login, Google auth, me
-│ │ ├── chat.py # Hybrid RAG + LLM chat endpoint
-│ │ ├── medical_chat.py # General medical Q&A (Hugging Face)
-│ │ ├── lab_analyzer.py # Lab report image analysis (Gemini)
-│ │ ├── voice.py # Voice capability endpoints (browser Speech API)
-│ │ ├── profile.py # Patient profile CRUD + BMI calculation
-│ │ └── tracking.py # Health tracking & lab entry CRUD
-│ │
-│ └── database/
-│ ├── database.py # Lightweight JSON-file storage (profile, labs, tracking)
-│ ├── auth_db.py # SQLAlchemy models: User, ChatSession, ChatMessage
-│ └── models.py # Pydantic request/response schemas
+│   ├── main.py                  # FastAPI app assembly, routers, static file serving
+│   ├── config.py                # Central configuration & environment-driven settings
+│   ├── security.py              # Bcrypt hashing, custom JWT, OTP generation
+│   ├── email_service.py         # OTP email dispatch (SMTP or console fallback)
+│   │
+│   ├── ai/
+│   │   ├── llm.py               # Ollama integration, output cleaning, fallback answers
+│   │   ├── prompts.py           # Bilingual RAG & general-knowledge system prompts
+│   │   └── safety.py            # Regex-based bilingual safety guardrails
+│   │
+│   ├── rag/
+│   │   ├── loader.py            # Category-aware PDF loading with page-level metadata
+│   │   ├── chunker.py           # Recursive character-based chunking
+│   │   ├── embeddings.py        # Local (FastEmbed) / OpenAI embedding provider
+│   │   ├── vectorstore.py       # ChromaDB creation, querying, deletion
+│   │   ├── retriever.py         # Similarity search + evidence-strength classification
+│   │   ├── citations.py         # Citation filtering & formatting
+│   │   └── ingest.py            # End-to-end ingestion pipeline (load → chunk → embed)
+│   │
+│   ├── api/
+│   │   ├── auth.py              # Register, OTP verify/resend, login, Google auth, me
+│   │   ├── chat.py              # Hybrid RAG + LLM chat endpoint
+│   │   ├── medical_chat.py      # General medical Q&A (Hugging Face)
+│   │   ├── lab_analyzer.py      # Lab report image analysis (Gemini)
+│   │   ├── voice.py             # Voice capability endpoints (browser Speech API)
+│   │   ├── profile.py           # Patient profile CRUD + BMI calculation
+│   │   └── tracking.py          # Health tracking & lab entry CRUD
+│   │
+│   └── database/
+│       ├── database.py          # Lightweight JSON-file storage (profile, labs, tracking)
+│       ├── auth_db.py           # SQLAlchemy models: User, ChatSession, ChatMessage
+│       └── models.py            # Pydantic request/response schemas
 │
 ├── frontend/
-│ ├── index.html # Main bilingual single-page UI
-│ ├── styles.css # RTL/LTR styling
-│ ├── app.js # Frontend application logic
-│ └── assets/ # Additional static assets
+│   ├── index.html               # Main bilingual single-page UI
+│   ├── styles.css               # RTL/LTR styling
+│   ├── app.js                   # Frontend application logic
+│   └── assets/                  # Additional static assets
 │
 ├── data/
-│ ├── healthcare/ # Clinical guideline & journal PDFs
-│ ├── nutrition/ # Nutrition & diet-related PDFs
-│ ├── food/ # Food-related reference PDFs
-│ ├── laboratory/ # Lab methodology / biomarker PDFs
-│ ├── raw/ # Originally sourced PDFs
-│ └── store/ # Runtime JSON storage (profile, labs, tracking)
+│   ├── healthcare/              # Clinical guideline & journal PDFs
+│   ├── nutrition/               # Nutrition & diet-related PDFs
+│   ├── food/                    # Food-related reference PDFs
+│   ├── laboratory/              # Lab methodology / biomarker PDFs
+│   ├── raw/                     # Originally sourced PDFs
+│   └── store/                   # Runtime JSON storage (profile, labs, tracking)
 │
 ├── scripts/
-│ ├── ingest_all.py # Full ingestion entry point
-│ ├── test_retrieval.py # Retrieval smoke tests
-│ ├── test_all.py # End-to-end pipeline tests
-│ └── ... # Additional ingestion/debugging utilities
+│   ├── ingest_all.py            # Full ingestion entry point
+│   ├── test_retrieval.py        # Retrieval smoke tests
+│   ├── test_all.py              # End-to-end pipeline tests
+│   └── ...                      # Additional ingestion/debugging utilities
 │
 ├── eval/
-│ ├── Day1_Retrieval_Test_Set.csv # Curated retrieval evaluation questions
-│ └── Day1_Safety_Test_Cases.csv # Curated safety-layer evaluation cases
+│   ├── Day1_Retrieval_Test_Set.csv  # Curated retrieval evaluation questions
+│   └── Day1_Safety_Test_Cases.csv   # Curated safety-layer evaluation cases
 │
-├── tests/ # Reserved for automated test suite
-├── DATA_SOURCES.md # Full inventory of ingested/ignored documents
-├── CODE_GUIDE_AR.md # Arabic-language walkthrough of the codebase
-├── requirements.txt # Python dependencies
-├── .env.example # Environment variable template
-└── run.bat / start_server.bat # Windows launch scripts
-
+├── tests/                       # Reserved for automated test suite
+├── DATA_SOURCES.md              # Full inventory of ingested/ignored documents
+├── CODE_GUIDE_AR.md             # Arabic-language walkthrough of the codebase
+├── requirements.txt             # Python dependencies
+├── .env.example                 # Environment variable template
+└── run.bat / start_server.bat   # Windows launch scripts
 
 > **Note:** the repository root also contains a separate, standalone Vite/React/TypeScript prototype (`src/`, `server.ts`, `index.html`, `style.css`) built around the Google Gemini API with a hardcoded clinical knowledge base. This is an independent exploratory UI and is not part of the FastAPI/RAG backend described above.
 
