@@ -188,6 +188,8 @@ flowchart TD
 | **Config / Env** | python-dotenv |
 
 ## 📁 Project Structure
+
+```text
 LiverCare-AI/
 ├── backend/
 │   ├── main.py                  # FastAPI app assembly, routers, static file serving
