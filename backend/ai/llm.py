@@ -6,6 +6,7 @@ Optimized for Qwen3 with thinking mode disabled and proper output cleaning.
 
 import sys
 import re
+import time
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import config
@@ -40,6 +41,101 @@ def _call_ollama(prompt, max_tokens=1024):
         return data.get("response", ""), None
     except Exception as e:
         return None, str(e)
+
+
+def _gemini_models():
+    """Primary + fallback Gemini model names (comma separated via GEMINI_MODEL_FALLBACKS)."""
+    models = [config.GEMINI_MODEL]
+    for model in (config.GEMINI_MODEL_FALLBACKS or "").split(","):
+        model = model.strip()
+        if model and model not in models:
+            models.append(model)
+    return models
+
+
+def _call_gemini(prompt, max_tokens=1024, retries=3):
+    """
+    Call Google AI Studio (Gemini) and return (text, error).
+
+    Retries transient upstream errors (429 / 5xx) on the primary model, then
+    moves on to the fallback models - Gemini occasionally answers 503
+    "high demand" during peak load.
+    """
+    if not config.GEMINI_API_KEY:
+        return None, "GOOGLE_API_KEY / GEMINI_API_KEY not configured"
+
+    payload = {
+        "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+        "generationConfig": {
+            "temperature": 0.6,
+            "topP": 0.9,
+            "maxOutputTokens": max_tokens,
+        },
+    }
+
+    errors = []
+    for index, model in enumerate(_gemini_models()):
+        attempts = retries if index == 0 else 1
+        url = f"{config.GEMINI_BASE_URL}/models/{model}:generateContent"
+
+        for attempt in range(attempts):
+            try:
+                response = requests.post(
+                    url,
+                    params={"key": config.GEMINI_API_KEY},
+                    json=payload,
+                    timeout=120,
+                )
+                if response.status_code in (429, 500, 502, 503, 504):
+                    errors.append(f"{model}: HTTP {response.status_code}")
+                    time.sleep(2.0)
+                    continue
+                response.raise_for_status()
+                data = response.json()
+                candidates = data.get("candidates") or []
+                if not candidates:
+                    errors.append(f"{model}: empty response")
+                    continue
+                parts = candidates[0].get("content", {}).get("parts", []) or []
+                text = "".join(p.get("text", "") for p in parts)
+                if text:
+                    if errors:
+                        print(f"NOTE: {errors[0]} - answered by {model}")
+                    return text, None
+                errors.append(f"{model}: no text in response")
+                break
+            except Exception as e:
+                errors.append(f"{model}: {e}")
+                time.sleep(2.0)
+
+    return None, " | ".join(errors)
+
+
+def _providers_in_order():
+    """LLM provider order, based on the LLM_PROVIDER setting."""
+    primary = (config.LLM_PROVIDER or "ollama").lower().strip()
+    if primary == "gemini":
+        return ["gemini", "ollama"]
+    return ["ollama", "gemini"]
+
+
+def generate_text(prompt, max_tokens=1024):
+    """
+    Generate text using the configured providers in order.
+    Returns (text, error). text is None when every provider failed.
+    """
+    errors = []
+    for provider in _providers_in_order():
+        if provider == "gemini":
+            text, err = _call_gemini(prompt, max_tokens=max_tokens)
+        else:
+            text, err = _call_ollama(prompt, max_tokens=max_tokens)
+        if text:
+            if errors:
+                print(f"NOTE: {errors[0]} - using {provider} instead")
+            return text, None
+        errors.append(f"{provider}: {err}")
+    return None, " | ".join(errors)
 
 
 def _clean_output(text, lang="en"):
@@ -126,11 +222,11 @@ def generate_answer(question, context, lang="en", evidence_strength="strong"):
             system_prompt = SYSTEM_PROMPT_GENERAL_EN
         full_prompt = system_prompt.format(question=question)
 
-    text, err = _call_ollama(full_prompt, max_tokens=1024)
+    text, err = generate_text(full_prompt, max_tokens=1024)
     if text:
         return _clean_output(text, lang)
 
-    print(f"ERROR: Ollama generation failed: {err}")
+    print(f"ERROR: LLM generation failed: {err}")
     return _fallback_answer(context, lang)
 
 

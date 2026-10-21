@@ -24,8 +24,8 @@ if not exist "vector_db\chroma" (
     echo.
 )
 
-REM Start the backend server
+REM Start the backend server (selector event loop - keeps serving on Windows)
 echo Starting LiverCare AI server...
 echo Open http://localhost:8000 in your browser
 echo.
-python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000 --reload
+python run_backend.py 0.0.0.0 8000

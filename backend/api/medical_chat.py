@@ -11,6 +11,9 @@ import re
 
 router = APIRouter(prefix="/api", tags=["medical_chat"])
 
+# Fallback LLM (Gemini / Ollama) used when HuggingFace Inference is unavailable.
+from backend.ai.llm import generate_text
+
 HF_TOKEN = os.getenv("HF_TOKEN", "")
 HF_MEDICAL_MODEL = os.getenv("HF_MEDICAL_MODEL", "Qwen/Qwen2.5-7B-Instruct")
 
@@ -121,8 +124,17 @@ async def medical_chat(request: MedicalChatRequest):
 
     messages.append({"role": "user", "content": question})
 
+    prompt = _build_prompt(messages)
+
     try:
-        answer = _call_hf_inference(messages)
+        # Primary: configured LLM provider (Gemini / Ollama).
+        # Fallback: HuggingFace Inference API.
+        answer, llm_err = generate_text(prompt, max_tokens=1024)
+        if not answer:
+            try:
+                answer = _call_hf_inference(messages)
+            except Exception as hf_err:
+                raise ValueError(f"Fallback LLM: {llm_err} | HuggingFace: {hf_err}")
         answer = _clean_medical_output(answer)
 
         if not answer:

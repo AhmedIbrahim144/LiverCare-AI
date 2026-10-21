@@ -73,6 +73,17 @@ OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen3:8b")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 OPENAI_CHAT_MODEL = os.getenv("OPENAI_CHAT_MODEL", "gpt-4o-mini")
 
+# Google AI Studio (Gemini) - primary/fallback LLM used when Ollama or
+# HuggingFace Inference are unavailable.
+GEMINI_API_KEY = os.getenv("GOOGLE_API_KEY", "")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
+GEMINI_MODEL_FALLBACKS = os.getenv(
+    "GEMINI_MODEL_FALLBACKS", "gemini-3.7-flash,gemini-3.1-flash-lite-preview"
+)
+GEMINI_BASE_URL = os.getenv(
+    "GEMINI_BASE_URL", "https://generativelanguage.googleapis.com/v1beta"
+)
+
 # ═══════════════════════════════════════════════════════════
 # Data Categories
 # ═══════════════════════════════════════════════════════════
