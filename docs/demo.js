@@ -77,7 +77,9 @@
       '<button type="button" aria-label="Close demo banner">&times;</button>';
     banner.querySelector("button").addEventListener("click", function () {
       banner.remove();
+      document.body.classList.remove("demo-banner-visible");
     });
+    document.body.classList.add("demo-banner-visible");
     document.body.appendChild(banner);
   }
 

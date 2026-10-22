@@ -436,9 +436,22 @@ function showSection(viewId) {
 
   state.currentView = viewId;
   document.getElementById('app-sidebar').classList.remove('mobile-open');
+  document.body.classList.remove('sidebar-open');
 }
 
-function toggleMobileSidebar() { document.getElementById('app-sidebar').classList.toggle('mobile-open'); }
+function toggleMobileSidebar() {
+  const open = document.getElementById('app-sidebar').classList.toggle('mobile-open');
+  document.body.classList.toggle('sidebar-open', open);
+}
+
+function closeMobileSidebar() {
+  document.getElementById('app-sidebar').classList.remove('mobile-open');
+  document.body.classList.remove('sidebar-open');
+}
+
+// Close the drawer with Escape, and keep it in sync on rotate/resize
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMobileSidebar(); });
+window.addEventListener('resize', () => { if (window.innerWidth > 768) closeMobileSidebar(); });
 
 // ═══════════════════════════════════════════════════════════
 // Authentication System
